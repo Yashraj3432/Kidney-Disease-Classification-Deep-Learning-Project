@@ -3,8 +3,8 @@ from pathlib import Path
 import mlflow
 import mlflow.keras
 from urllib.parse import urlparse
-from cnnClassifier.entity.config_entity import EvaluationConfig
-from cnnClassifier.utils.common import read_yaml, create_directories,save_json
+from src.cnnClassifier.entity.config_entity import EvaluationConfig
+from src.cnnClassifier.utils.common import read_yaml, create_directories,save_json
 
 
 class Evaluation:
@@ -16,7 +16,7 @@ class Evaluation:
 
         datagenerator_kwargs = dict(
             rescale = 1./255,
-            validation_split=0.30
+            validation_split=0.20
         )
 
         dataflow_kwargs = dict(
