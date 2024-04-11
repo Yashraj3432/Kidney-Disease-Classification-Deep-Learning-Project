@@ -10,7 +10,7 @@ from src.cnnClassifier.utils.common import read_yaml, create_directories,save_js
 class Evaluation:
     def __init__(self, config: EvaluationConfig):
         self.config = config
-
+        self.model = None
     
     def _valid_generator(self):
 
@@ -55,6 +55,8 @@ class Evaluation:
     
     def log_into_mlflow(self):
         mlflow.set_registry_uri(self.config.mlflow_uri)
+        mlflow.set_tracking_uri("https://dagshub.com/Yashraj3432/Kidney-Disease-Classification-Deep-Learning-Project.mlflow")
+
         tracking_url_type_store = urlparse(mlflow.get_tracking_uri()).scheme
         
         with mlflow.start_run():
@@ -64,11 +66,16 @@ class Evaluation:
             )
             # Model registry does not work with file store
             if tracking_url_type_store != "file":
+                signature = mlflow.tensorflow.get_signature(self.model)
+                mlflow.keras.log_model(self.model, "model", signature=signature, registered_model_name="VGG16Model")
+                
 
                 # Register the model
                 # There are other ways to use the Model Registry, which depends on the use case,
                 # please refer to the doc for more information:
                 # https://mlflow.org/docs/latest/model-registry.html#api-workflow
-                mlflow.keras.log_model(self.model, "model", registered_model_name="VGG16Model")
+                #mlflow.keras.log_model(self.model, "model", registered_model_name="VGG16Model")
             else:
                 mlflow.keras.log_model(self.model, "model")
+    
+    
