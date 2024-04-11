@@ -1,4 +1,4 @@
-'''import os
+import os
 import urllib.request as request
 from zipfile import ZipFile
 import tensorflow as tf
@@ -10,6 +10,7 @@ from src.cnnClassifier.entity.config_entity import TrainingConfig
 class Training:
     def __init__(self, config: TrainingConfig):
         self.config = config
+        self.optimizer = tf.keras.optimizers.Adam(learning_rate=0.01)
 
     
     def get_base_model(self):
@@ -21,7 +22,7 @@ class Training:
 
         datagenerator_kwargs = dict(
             rescale = 1./255,
-            validation_split=0.20
+            validation_split=0.30
         )
 
         dataflow_kwargs = dict(
@@ -72,6 +73,7 @@ class Training:
     def train(self):
         self.steps_per_epoch = self.train_generator.samples // self.train_generator.batch_size
         self.validation_steps = self.valid_generator.samples // self.valid_generator.batch_size
+        self.model.compile(optimizer=self.optimizer, loss='binary_crossentropy', metrics=['accuracy'])  # Compile the model with optimizer
 
         self.model.fit(
             self.train_generator,
@@ -84,8 +86,8 @@ class Training:
         self.save_model(
             path=self.config.trained_model_path,
             model=self.model
-        )'''
-import os
+        )
+'''import os
 import urllib.request as request
 from zipfile import ZipFile
 import tensorflow as tf
@@ -166,4 +168,4 @@ class Training:
         self.save_model(
             path=self.config.trained_model_path,
             model=self.model
-        )
+        )'''
